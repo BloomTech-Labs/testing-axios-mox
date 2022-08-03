@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const ImageList = () => {
+  const [images, setImages] = useState([]);
+  const [error, setError] = useState(false);
 
-export default App;
+  useEffect(() => {
+    axios
+      .get("https://api.unsplash.com/search/photos", {
+        params: { query: "cookies" },
+        headers: {
+          Authorization: `Client-ID ${process.env.REACT_APP_API_KEY}`,
+        },
+      })
+      .then((res) => {
+        setImages(res.data.results);
+      })
+      .catch((err) => setError(true));
+  }, []);
+
+  if (images.length === 0) {
+    return <div data-testid="loading">"Fetching Data"</div>;
+  } else {
+    {
+      return images.map((image) => {
+        return (
+          <div data-testid="image" key={image.id}>
+            <div>{image.description}</div>
+            <img src={image.urls.thumb} alt={image.alt_description} />
+          </div>
+        );
+      });
+    }
+  }
+};
+
+export default ImageList;
