@@ -29,14 +29,9 @@ function mockCall() {
   );
 }
 
-it("sends request for images", () => {
-  const { getByText } = render(<ImageList />);
-
-  expect(getByText(/fetching data/i)).toBeInTheDocument();
-});
-
 it("has list items in document", async () => {
   const { getByText } = render(<ImageList />);
+  expect(getByText(/fetching data/i)).toBeInTheDocument();
   await waitFor(() => {
     expect(getByText(/salted chocolate chip/i)).toBeInTheDocument();
     expect(mockAxios.get).toHaveBeenCalledTimes(1);
